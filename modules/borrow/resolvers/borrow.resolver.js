@@ -29,6 +29,22 @@ const borrowResolver = {
         throw error;
       }
     },
+
+    /******* updateBorrowStatus ******/
+    updateBorrowStatus: async (_, args) => {
+      try {
+        Logger.info("==========< updateBorrowStatus >==========");
+        const { borrowID, bookID, updateStatus } = args;
+        return await BorrowService.updateBorrowStatus(
+          borrowID,
+          bookID,
+          updateStatus
+        );
+      } catch (error) {
+        Logger.error(error);
+        throw error;
+      }
+    },
   },
 };
 
