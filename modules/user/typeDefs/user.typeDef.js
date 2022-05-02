@@ -11,7 +11,7 @@ const userTypeDef = gql`
     totalFines: Int
   }
 
-  type Query {
+  extend type Query {
     getUserByID(userID: String): User
   }
 `;
