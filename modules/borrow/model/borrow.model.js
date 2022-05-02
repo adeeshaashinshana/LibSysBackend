@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
+const ReturnState = require("../../shared/returnState");
+const FineState = require("../../shared/fineState");
 
 const borrowSchema = new mongoose.Schema(
   {
-    borrowID: {
-      type: Number,
-      required: true,
-    },
     userID: {
       type: String,
       required: true,
@@ -13,11 +11,14 @@ const borrowSchema = new mongoose.Schema(
     },
     borrowDate: {
       type: Date,
-      default: Date.now,
+      default: new Date(),
       required: true,
     },
     borrowedBooks: [
       {
+        recordID: {
+          type: Number,
+        },
         bookID: {
           type: String,
         },
@@ -26,6 +27,21 @@ const borrowSchema = new mongoose.Schema(
         },
         dueDate: {
           type: Date,
+        },
+        returnState: {
+          type: ReturnState,
+          default: ReturnState.PENDING,
+        },
+        returnedDate: {
+          type: Date,
+        },
+        fines: {
+          type: Number,
+          default: 0,
+        },
+        fineState: {
+          type: FineState,
+          default: FineState.NO_FINE,
         },
       },
     ],

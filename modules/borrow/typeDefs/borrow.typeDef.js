@@ -10,19 +10,23 @@ const borrowTypeDef = gql`
   }
 
   type BorrowedBooks {
+    recordID: Int
     bookID: String
     bookType: String
     dueDate: Date
+    returnState: String
+    returnedDate: Date
+    fines: Int
+    fineState: String
   }
 
   input BorrowInput {
-    borrowID: Int
     userID: String
-    borrowDate: Date
     borrowedBooks: [BorrowedBooksInput]
   }
 
   input BorrowedBooksInput {
+    recordID: Int
     bookID: String
     bookType: String
     dueDate: Date
