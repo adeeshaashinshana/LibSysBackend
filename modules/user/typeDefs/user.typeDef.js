@@ -8,11 +8,14 @@ const userTypeDef = gql`
     userEmail: String
     userType: String
     userState: String
-    totalFines: Int
   }
 
   extend type Query {
     getUserByID(userID: String): User
+  }
+
+  extend type Mutation {
+    createUser(userID: String): User
   }
 `;
 

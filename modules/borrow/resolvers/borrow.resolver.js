@@ -61,9 +61,10 @@ const borrowResolver = {
     updateFineStatus: async (_, args) => {
       try {
         Logger.info("==========< updateFineStatus >==========");
-        const { borrowID, bookID, updateStatus } = args;
+        const { borrowID, userID, bookID, updateStatus } = args;
         return await BorrowService.updateFineStatus(
           borrowID,
+          userID,
           bookID,
           updateStatus
         );

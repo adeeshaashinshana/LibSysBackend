@@ -5,6 +5,7 @@ const Constant = require("../../shared/constants");
 class BorrowService {
   /******** checkAllBorrowedRecords *******/
   async checkAllBorrowedRecords() {
+    Logger.info("==========< checkAllBorrowedRecords >==========");
     const allRecords = await BorrowSchema.find();
 
     await allRecords.forEach(async (record) => {
@@ -12,6 +13,7 @@ class BorrowService {
         let dueDate = book.dueDate;
         const CurrentDate = new Date();
         dueDate = new Date(dueDate);
+        let hasFine = false;
 
         if (
           dueDate.setHours(0, 0, 0, 0) < CurrentDate.setHours(0, 0, 0, 0) &&
@@ -26,30 +28,34 @@ class BorrowService {
             book.bookType === Constant.BookState.REFERENCE
           ) {
             fineValue = lateDays * 50;
-            // totalFines += fineValue;
           }
           if (
             user.userType === Constant.UserType.STUDENT &&
             book.bookType === Constant.BookState.LENDING
           ) {
             fineValue = lateDays * 10;
-            // totalFines += fineValue;
           }
           if (
             user.userType === Constant.UserType.STAFF_MEMBER &&
             book.bookType === Constant.BookState.REFERENCE
           ) {
             fineValue = lateDays * 80;
-            // totalFines += fineValue;
           }
           if (
             user.userType === Constant.UserType.STAFF_MEMBER &&
             book.bookType === Constant.BookState.LENDING
           ) {
             fineValue = lateDays * 20;
-            // totalFines += fineValue;
           }
           await this.updateFineValues(record.id, book.bookID, fineValue);
+          hasFine = true;
+        }
+
+        if (hasFine) {
+          await UserService.updateUser(
+            record.userID,
+            Constant.UserState.SUSPEND
+          );
         }
       });
     });
@@ -86,15 +92,32 @@ class BorrowService {
   }
 
   /******** updateFineStatus *******/
-  async updateFineStatus(borrowID, bookID, updateStatus) {
+  async updateFineStatus(borrowID, userID, bookID, updateStatus) {
     const updatedBorrowedRecord = await BorrowSchema.findOneAndUpdate(
       { _id: borrowID, "borrowedBooks.bookID": bookID },
       {
         $set: {
           "borrowedBooks.$.fineState": updateStatus,
         },
-      }
+      },
+      { returnNewDocument: true }
     );
+
+    let hasFine = false;
+
+    const allRecords = await BorrowSchema.find({ userID: userID });
+    await allRecords.forEach(async (record) => {
+      const fineRecords = await record.borrowedBooks.filter(
+        (book) => book.fineState === Constant.FineState.UNPAID
+      );
+      if (fineRecords.length > 0) {
+        hasFine = true;
+      }
+    });
+
+    if (!hasFine) {
+      await UserService.updateUser(userID, Constant.UserState.ACTIVE);
+    }
     return updatedBorrowedRecord;
   }
 

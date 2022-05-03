@@ -43,7 +43,12 @@ const borrowTypeDef = gql`
       bookID: String
       updateStatus: String
     ): Borrow
-    updateFineStatus(borrowID: ID, bookID: String, updateStatus: String): Borrow
+    updateFineStatus(
+      borrowID: ID
+      userID: String
+      bookID: String
+      updateStatus: String
+    ): Borrow
   }
 `;
 
