@@ -23,9 +23,6 @@ const userSchema = new mongoose.Schema(
       type: UserState,
       default: UserState.ACTIVE,
     },
-    totalFines: {
-      type: Number,
-    },
   },
   {
     collection: "user",

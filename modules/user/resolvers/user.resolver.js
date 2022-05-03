@@ -16,6 +16,20 @@ const userResolver = {
       }
     },
   },
+
+  Mutation: {
+    /******* createUser ******/
+    createUser: async (_, args) => {
+      try {
+        Logger.info("==========< createUser >==========");
+        const { userID } = args;
+        return await BorrowService.createUser(userID);
+      } catch (error) {
+        Logger.error(error);
+        throw error;
+      }
+    },
+  },
 };
 
 module.exports = userResolver;

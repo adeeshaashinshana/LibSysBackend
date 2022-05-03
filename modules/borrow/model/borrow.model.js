@@ -11,7 +11,7 @@ const borrowSchema = new mongoose.Schema(
     },
     borrowDate: {
       type: Date,
-      default: new Date(),
+      default: Date.now,
       required: true,
     },
     borrowedBooks: [

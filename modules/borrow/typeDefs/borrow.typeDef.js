@@ -3,7 +3,6 @@ const { gql } = require("apollo-server-express");
 const borrowTypeDef = gql`
   type Borrow {
     _id: ID!
-    borrowID: Int!
     userID: String!
     borrowDate: Date!
     borrowedBooks: [BorrowedBooks]
@@ -33,11 +32,23 @@ const borrowTypeDef = gql`
   }
 
   extend type Query {
+    checkAllBorrowedRecords: [Borrow]
     getBorrowedBookByUserID(userID: String): [Borrow]
   }
 
   extend type Mutation {
     createBorrow(borrowData: BorrowInput): Borrow
+    updateBorrowStatus(
+      borrowID: ID
+      bookID: String
+      updateStatus: String
+    ): Borrow
+    updateFineStatus(
+      borrowID: ID
+      userID: String
+      bookID: String
+      updateStatus: String
+    ): Borrow
   }
 `;
 
