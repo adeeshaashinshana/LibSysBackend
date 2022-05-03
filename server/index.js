@@ -5,6 +5,7 @@ const cors = require("cors");
 const { ApolloServer } = require("apollo-server-express");
 const mongoose = require("mongoose");
 const Logger = require("../shared/logger");
+const BorrowService = require("../modules/borrow/service/borrow.service");
 
 /****** Import Application ******/
 const application = require("./application");
@@ -12,6 +13,10 @@ const schema = application.createSchemaForApollo();
 
 /******* Database Connection ******/
 const databaseURL = process.env.MONGODB_URL;
+
+async function refreshDB() {
+  await BorrowService.checkAllBorrowedRecords();
+}
 
 async function startServer() {
   const app = express();
@@ -40,3 +45,15 @@ async function startServer() {
 }
 
 startServer();
+
+// update database every 24 hours
+cron.schedule(
+  "00 */24 * * *",
+  () => {
+    Logger.info("==========< Data refresh started >==========");
+    refreshDB();
+  },
+  {
+    scheduled: true,
+  }
+);
