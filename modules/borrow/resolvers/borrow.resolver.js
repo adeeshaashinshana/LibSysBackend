@@ -4,6 +4,17 @@ const BorrowService = require("../service/borrow.service");
 
 const borrowResolver = {
   Query: {
+    /******* checkAllBorrowedRecords ******/
+    checkAllBorrowedRecords: async (_, __) => {
+      try {
+        Logger.info("==========< checkAllBorrowedRecords >==========");
+        return await BorrowService.checkAllBorrowedRecords();
+      } catch (error) {
+        Logger.error(error);
+        throw error;
+      }
+    },
+
     /******* getBorrowedBookByUserID ******/
     getBorrowedBookByUserID: async (_, args) => {
       try {
@@ -36,6 +47,22 @@ const borrowResolver = {
         Logger.info("==========< updateBorrowStatus >==========");
         const { borrowID, bookID, updateStatus } = args;
         return await BorrowService.updateBorrowStatus(
+          borrowID,
+          bookID,
+          updateStatus
+        );
+      } catch (error) {
+        Logger.error(error);
+        throw error;
+      }
+    },
+
+    /******* updateFineStatus ******/
+    updateFineStatus: async (_, args) => {
+      try {
+        Logger.info("==========< updateFineStatus >==========");
+        const { borrowID, bookID, updateStatus } = args;
+        return await BorrowService.updateFineStatus(
           borrowID,
           bookID,
           updateStatus

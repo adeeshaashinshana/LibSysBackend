@@ -32,6 +32,7 @@ const borrowTypeDef = gql`
   }
 
   extend type Query {
+    checkAllBorrowedRecords: [Borrow]
     getBorrowedBookByUserID(userID: String): [Borrow]
   }
 
@@ -42,6 +43,7 @@ const borrowTypeDef = gql`
       bookID: String
       updateStatus: String
     ): Borrow
+    updateFineStatus(borrowID: ID, bookID: String, updateStatus: String): Borrow
   }
 `;
 
