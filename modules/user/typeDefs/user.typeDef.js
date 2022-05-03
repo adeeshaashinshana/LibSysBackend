@@ -10,12 +10,19 @@ const userTypeDef = gql`
     userState: String
   }
 
+  input UserCreateInput {
+    userID: String!
+    userName: String
+    userEmail: String
+    userType: String
+  }
+
   extend type Query {
     getUserByID(userID: String): User
   }
 
   extend type Mutation {
-    createUser(userID: String): User
+    createUser(newUser: UserCreateInput): User
   }
 `;
 
