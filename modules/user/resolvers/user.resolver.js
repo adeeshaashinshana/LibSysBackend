@@ -22,8 +22,8 @@ const userResolver = {
     createUser: async (_, args) => {
       try {
         Logger.info("==========< createUser >==========");
-        const { userID } = args;
-        return await BorrowService.createUser(userID);
+        const { newUser } = args;
+        return await UserService.createUser(newUser);
       } catch (error) {
         Logger.error(error);
         throw error;

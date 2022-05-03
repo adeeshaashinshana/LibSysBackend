@@ -9,10 +9,8 @@ class UserService {
   }
 
   /******** Create User *******/
-  async createUser(userID) {
-    if (userID !== "") {
-      return await UserSchema.create(user);
-    }
+  async createUser(newUser) {
+    return await UserSchema.create(newUser);
   }
 
   /******** Update User *******/
