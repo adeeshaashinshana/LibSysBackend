@@ -2,6 +2,8 @@ const BorrowSchema = require("../model/borrow.model");
 const Logger = require("../../../shared/logger");
 const UserService = require("../../user/service/user.service");
 const Constant = require("../../shared/constants");
+const sendRemindEmail = require("../../../shared/reminderMail");
+
 class BorrowService {
   /******** checkAllBorrowedRecords *******/
   async checkAllBorrowedRecords() {
@@ -47,8 +49,15 @@ class BorrowService {
           ) {
             fineValue = lateDays * 20;
           }
+
           await this.updateFineValues(record.id, book.bookID, fineValue);
           hasFine = true;
+          this.sendReminder(
+            lateDays,
+            book.bookType,
+            book.bookID,
+            user.userEmail
+          );
         }
 
         if (hasFine) {
@@ -62,6 +71,19 @@ class BorrowService {
     return allRecords;
   }
 
+  /******** send reminder for overdue borrowed books *******/
+  async sendReminder(overdueDays, bookType, bookID, userEmail) {
+    Logger.info("==========< sentReminder >==========");
+    if (bookType === Constant.BookState.REFERENCE) {
+      sendRemindEmail(overdueDays, bookID, userEmail);
+    } else {
+      if (overdueDays % 3 === 0) {
+        sendRemindEmail(overdueDays, bookID, userEmail);
+      }
+    }
+  }
+
+  /******** calculate the number of late days *******/
   async lateDayCounter(CurrentDate, dueDate) {
     const diffTime = Math.abs(CurrentDate - dueDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
